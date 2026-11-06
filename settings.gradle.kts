@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Shamsa"
-include(":shamsa")
+include(":shamsa", ":sample")
