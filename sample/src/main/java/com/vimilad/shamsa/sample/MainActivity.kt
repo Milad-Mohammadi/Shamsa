@@ -13,6 +13,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,6 +40,7 @@ private fun Sample() {
     var selected by remember { mutableStateOf<JalaliDate?>(null) }
     var showDefault by remember { mutableStateOf(false) }
     var showCustom by remember { mutableStateOf(false) }
+    var touchCount by remember { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier
@@ -48,6 +50,7 @@ private fun Sample() {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text("تاریخ انتخابی: ${selected ?: "—"}")
+        Text("تعداد لمس داخل پیکر: $touchCount")
 
         Button(onClick = { showDefault = true }) { Text("پیش‌فرض (امروز)") }
         Button(onClick = { showCustom = true }) { Text("سفارشی (۳۰ اسفند ۱۴۰۳ کبیسه)") }
@@ -58,6 +61,7 @@ private fun Sample() {
             onDismissRequest = { showDefault = false },
             onConfirm = { selected = it },
             initialDate = selected ?: JalaliDate.today(),
+            onTouch = { touchCount++ },
         )
     }
 
@@ -72,6 +76,7 @@ private fun Sample() {
                 cancel = "بستن",
                 useFarsiDigits = false,
             ),
+            onTouch = { touchCount++ },
         )
     }
 }

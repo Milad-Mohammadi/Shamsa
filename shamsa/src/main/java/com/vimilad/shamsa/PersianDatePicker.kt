@@ -26,10 +26,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -38,6 +41,8 @@ import kotlinx.coroutines.launch
 /**
  * The picker content without the sheet. Use it inside your own dialog or screen if needed.
  *
+ * @param onTouch Called on every finger-down anywhere inside the content. The event is not
+ *   consumed, so wheels and buttons behave as usual.
  * @param colors Colors of every part. See [PersianDatePickerDefaults.colors].
  */
 @Composable
@@ -49,6 +54,7 @@ fun PersianDatePickerContent(
     yearRange: IntRange = 1300..1500,
     texts: PersianDatePickerTexts = PersianDatePickerTexts(),
     colors: PersianDatePickerColors = PersianDatePickerDefaults.colors(),
+    onTouch: () -> Unit = {},
 ) {
     require(!yearRange.isEmpty()) { "yearRange must not be empty" }
 
@@ -70,6 +76,7 @@ fun PersianDatePickerContent(
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Column(
             modifier = modifier
+                .observeTouches(onTouch)
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 16.dp)
@@ -153,6 +160,8 @@ fun PersianDatePickerContent(
  * @param onDismissRequest Called after the sheet has closed (cancel, confirm, swipe down,
  *   tap outside, Back). Set your "show" state to false here.
  * @param onConfirm Called with the selected date when the user confirms.
+ * @param onTouch Called on every finger-down anywhere on the sheet, including the drag handle.
+ *   Handy for resetting an inactivity timer.
  * @param colors Colors of every part. See [PersianDatePickerDefaults.colors].
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -165,6 +174,7 @@ fun PersianDatePickerBottomSheet(
     yearRange: IntRange = 1300..1500,
     texts: PersianDatePickerTexts = PersianDatePickerTexts(),
     colors: PersianDatePickerColors = PersianDatePickerDefaults.colors(),
+    onTouch: () -> Unit = {},
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
     val scope = rememberCoroutineScope()
@@ -177,7 +187,7 @@ fun PersianDatePickerBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
         containerColor = colors.sheetContainer,
-        modifier = modifier,
+        modifier = modifier.observeTouches(onTouch),
     ) {
         PersianDatePickerContent(
             onConfirm = { date -> hideThen { onConfirm(date); onDismissRequest() } },
@@ -187,5 +197,19 @@ fun PersianDatePickerBottomSheet(
             texts = texts,
             colors = colors,
         )
+    }
+}
+
+/** Observes finger-down events without consuming them (Initial pass, so children work as usual). */
+@Composable
+private fun Modifier.observeTouches(onTouch: () -> Unit): Modifier {
+    val current by rememberUpdatedState(onTouch)
+    return pointerInput(Unit) {
+        awaitPointerEventScope {
+            while (true) {
+                val event = awaitPointerEvent(PointerEventPass.Initial)
+                if (event.changes.any { it.pressed && !it.previousPressed }) current()
+            }
+        }
     }
 }
