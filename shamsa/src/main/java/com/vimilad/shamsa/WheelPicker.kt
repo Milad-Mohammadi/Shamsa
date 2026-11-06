@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.filter
 
@@ -47,6 +47,8 @@ internal fun WheelPicker(
     onSelectedIndexChange: (Int) -> Unit,
     selectedColor: Color,
     unselectedColor: Color,
+    textStyle: TextStyle,
+    selectedTextStyle: TextStyle,
     modifier: Modifier = Modifier,
 ) {
     val itemHeightPx = with(LocalDensity.current) { WheelItemHeight.toPx() }
@@ -113,7 +115,7 @@ internal fun WheelPicker(
             ) {
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = if (isSelected) selectedTextStyle else textStyle,
                     color = if (isSelected) selectedColor else unselectedColor,
                 )
             }

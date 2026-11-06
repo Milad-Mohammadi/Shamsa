@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,6 +49,7 @@ import kotlinx.coroutines.launch
  *   X/Escape/Back = cancel. Key focus starts on the day column; touching the month or year
  *   wheel moves key focus to that column.
  * @param colors Colors of every part. See [PersianDatePickerDefaults.colors].
+ * @param textStyles Fonts and text styles. See [PersianDatePickerDefaults.textStyles].
  */
 @Composable
 fun PersianDatePickerContent(
@@ -58,6 +60,7 @@ fun PersianDatePickerContent(
     yearRange: IntRange = 1300..1500,
     texts: PersianDatePickerTexts = PersianDatePickerTexts(),
     colors: PersianDatePickerColors = PersianDatePickerDefaults.colors(),
+    textStyles: PersianDatePickerTextStyles = PersianDatePickerDefaults.textStyles(),
     onTouch: () -> Unit = {},
     keys: PersianDatePickerKeys = PersianDatePickerKeys(),
 ) {
@@ -129,6 +132,8 @@ fun PersianDatePickerContent(
                         onSelectedIndexChange = { day = it + 1 },
                         selectedColor = if (focused == PickerField.Day) colors.focusedText else colors.selectedText,
                         unselectedColor = colors.unselectedText,
+                        textStyle = textStyles.item,
+                        selectedTextStyle = textStyles.selectedItem,
                         modifier = Modifier
                             .weight(1f)
                             .observeTouches { focused = PickerField.Day },
@@ -139,6 +144,8 @@ fun PersianDatePickerContent(
                         onSelectedIndexChange = { month = it + 1 },
                         selectedColor = if (focused == PickerField.Month) colors.focusedText else colors.selectedText,
                         unselectedColor = colors.unselectedText,
+                        textStyle = textStyles.item,
+                        selectedTextStyle = textStyles.selectedItem,
                         modifier = Modifier
                             .weight(1.4f)
                             .observeTouches { focused = PickerField.Month },
@@ -149,6 +156,8 @@ fun PersianDatePickerContent(
                         onSelectedIndexChange = { year = yearRange.first + it },
                         selectedColor = if (focused == PickerField.Year) colors.focusedText else colors.selectedText,
                         unselectedColor = colors.unselectedText,
+                        textStyle = textStyles.item,
+                        selectedTextStyle = textStyles.selectedItem,
                         modifier = Modifier
                             .weight(1f)
                             .observeTouches { focused = PickerField.Year },
@@ -173,15 +182,19 @@ fun PersianDatePickerContent(
                         containerColor = colors.confirmContainer,
                         contentColor = colors.confirmContent,
                     ),
-                ) { Text(texts.confirm) }
+                ) { Text(texts.confirm, style = textStyles.button) }
 
                 TextButton(
                     onClick = onCancel,
                     modifier = Modifier
                         .weight(1f)
                         .height(52.dp),
-                    colors = ButtonDefaults.textButtonColors(contentColor = colors.cancelContent),
-                ) { Text(texts.cancel) }
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.textButtonColors(
+                        containerColor = colors.cancelContainer,
+                        contentColor = colors.cancelContent,
+                    ),
+                ) { Text(texts.cancel, style = textStyles.button) }
             }
         }
     }
@@ -197,6 +210,7 @@ fun PersianDatePickerContent(
  *   Handy for resetting an inactivity timer.
  * @param keys Hardware key mapping. Use [PersianDatePickerKeys.None] to turn it off.
  * @param colors Colors of every part. See [PersianDatePickerDefaults.colors].
+ * @param textStyles Fonts and text styles. See [PersianDatePickerDefaults.textStyles].
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -208,6 +222,7 @@ fun PersianDatePickerBottomSheet(
     yearRange: IntRange = 1300..1500,
     texts: PersianDatePickerTexts = PersianDatePickerTexts(),
     colors: PersianDatePickerColors = PersianDatePickerDefaults.colors(),
+    textStyles: PersianDatePickerTextStyles = PersianDatePickerDefaults.textStyles(),
     onTouch: () -> Unit = {},
     keys: PersianDatePickerKeys = PersianDatePickerKeys(),
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
@@ -222,6 +237,8 @@ fun PersianDatePickerBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
         containerColor = colors.sheetContainer,
+        scrimColor = colors.scrim,
+        dragHandle = { BottomSheetDefaults.DragHandle(color = colors.dragHandle) },
         modifier = modifier.observeTouches(onTouch),
     ) {
         PersianDatePickerContent(
@@ -231,6 +248,7 @@ fun PersianDatePickerBottomSheet(
             yearRange = yearRange,
             texts = texts,
             colors = colors,
+            textStyles = textStyles,
             keys = keys,
         )
     }

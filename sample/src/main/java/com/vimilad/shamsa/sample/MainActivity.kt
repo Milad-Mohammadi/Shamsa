@@ -19,9 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.vimilad.shamsa.JalaliDate
 import com.vimilad.shamsa.PersianDatePickerBottomSheet
+import com.vimilad.shamsa.PersianDatePickerDefaults
 import com.vimilad.shamsa.PersianDatePickerTexts
 
 class MainActivity : ComponentActivity() {
@@ -75,6 +79,24 @@ private fun Sample() {
                 confirm = "ثبت",
                 cancel = "بستن",
                 useFarsiDigits = false,
+            ),
+            // One line to change the font of the whole picker. Swap in your own FontFamily,
+            // e.g. FontFamily(Font(R.font.vazirmatn)).
+            textStyles = PersianDatePickerDefaults.textStyles(
+                fontFamily = FontFamily.Monospace,
+                selectedItem = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+            ),
+            // Override only the colors you care about; the rest follow the theme.
+            colors = PersianDatePickerDefaults.colors(
+                sheetContainer = Color(0xFF1B2B34),
+                selectedRow = Color(0xFF2C4452),
+                selectedText = Color.White,
+                focusedText = Color(0xFFFFC857),
+                unselectedText = Color.White.copy(alpha = 0.35f),
+                dragHandle = Color.White.copy(alpha = 0.5f),
+                confirmContainer = Color(0xFFFFC857),
+                confirmContent = Color.Black,
+                cancelContent = Color.White,
             ),
             onTouch = { touchCount++ },
         )
