@@ -2,6 +2,7 @@ package com.vimilad.shamsa
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +27,13 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.filter
 
 internal val WheelItemHeight = 44.dp
+
+private class BooleanHolder(var value: Boolean = false)
+
+private class LongHolder(var value: Long = 0L)
+
+/** External changes closer together than this (key held down) jump instead of animating. */
+private const val RAPID_CHANGE_NANOS = 150_000_000L
 
 /**
  * A 3-row wheel (previous, current, next). The middle row is the selected one.
@@ -55,17 +63,37 @@ internal fun WheelPicker(
         }
     }
 
-    // When scrolling stops, report the selected value to the caller.
+    // Only scrolls started by a finger are reported to the caller.
+    // Programmatic scrolls (hardware keys, day clamping) never write back a value.
+    val userScroll = remember { BooleanHolder() }
+
+    LaunchedEffect(state) {
+        state.interactionSource.interactions.collect {
+            if (it is DragInteraction.Start) userScroll.value = true
+        }
+    }
+
     LaunchedEffect(state) {
         snapshotFlow { state.isScrollInProgress }
             .filter { !it }
-            .collect { currentOnChange(centered) }
+            .collect {
+                if (userScroll.value) {
+                    userScroll.value = false
+                    currentOnChange(centered)
+                }
+            }
     }
 
-    // Apply changes that come from outside (e.g. day clamping).
+    // Apply changes that come from outside (hardware keys, day clamping).
+    // A single change animates; rapid repeated changes (key held down) jump instantly so the
+    // wheel keeps up instead of restarting an animation on every key repeat.
+    val lastExternalChange = remember { LongHolder() }
     LaunchedEffect(selectedIndex, items.size) {
-        if (!state.isScrollInProgress && centered != selectedIndex) {
-            state.animateScrollToItem(selectedIndex)
+        if (centered != selectedIndex) {
+            val now = System.nanoTime()
+            val rapid = now - lastExternalChange.value < RAPID_CHANGE_NANOS
+            lastExternalChange.value = now
+            if (rapid) state.scrollToItem(selectedIndex) else state.animateScrollToItem(selectedIndex)
         }
     }
 

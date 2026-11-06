@@ -38,6 +38,11 @@ data class PersianDatePickerColors(
     val selectedRow: Color,
     /** Text of the selected row in wheels that do not have key focus. */
     val selectedText: Color,
+    /**
+     * Text of the selected row in the wheel that currently has hardware-key focus.
+     * Set it equal to [selectedText] to hide the focus indication.
+     */
+    val focusedText: Color,
     /** Text of the previous and next rows. */
     val unselectedText: Color,
     val confirmContainer: Color,
@@ -52,6 +57,7 @@ object PersianDatePickerDefaults {
         sheetContainer: Color = MaterialTheme.colorScheme.surface,
         selectedRow: Color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
         selectedText: Color = MaterialTheme.colorScheme.onSurface,
+        focusedText: Color = MaterialTheme.colorScheme.primary,
         unselectedText: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
         confirmContainer: Color = MaterialTheme.colorScheme.primary,
         confirmContent: Color = MaterialTheme.colorScheme.onPrimary,
@@ -60,6 +66,7 @@ object PersianDatePickerDefaults {
         sheetContainer = sheetContainer,
         selectedRow = selectedRow,
         selectedText = selectedText,
+        focusedText = focusedText,
         unselectedText = unselectedText,
         confirmContainer = confirmContainer,
         confirmContent = confirmContent,

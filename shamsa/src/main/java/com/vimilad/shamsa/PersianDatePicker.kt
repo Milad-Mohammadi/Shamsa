@@ -24,6 +24,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
@@ -43,6 +44,9 @@ import kotlinx.coroutines.launch
  *
  * @param onTouch Called on every finger-down anywhere inside the content. The event is not
  *   consumed, so wheels and buttons behave as usual.
+ * @param keys Hardware key mapping. Defaults: up/right = +1, down/left = -1, OK = confirm,
+ *   X/Escape/Back = cancel. Key focus starts on the day column; touching the month or year
+ *   wheel moves key focus to that column.
  * @param colors Colors of every part. See [PersianDatePickerDefaults.colors].
  */
 @Composable
@@ -55,6 +59,7 @@ fun PersianDatePickerContent(
     texts: PersianDatePickerTexts = PersianDatePickerTexts(),
     colors: PersianDatePickerColors = PersianDatePickerDefaults.colors(),
     onTouch: () -> Unit = {},
+    keys: PersianDatePickerKeys = PersianDatePickerKeys(),
 ) {
     require(!yearRange.isEmpty()) { "yearRange must not be empty" }
 
@@ -69,6 +74,22 @@ fun PersianDatePickerContent(
     // e.g. 31 Mehr -> Aban becomes 30, and 30 Esfand of a leap year -> a normal year becomes 29.
     LaunchedEffect(monthLength) { day = day.coerceAtMost(monthLength) }
 
+    var focused by remember { mutableStateOf(PickerField.Day) }
+
+    // Always reads the latest state, so rapid key events and the repeat timer never use stale values.
+    fun step(delta: Int) {
+        val length = JalaliCalendar.monthLength(year, month)
+        when (focused) {
+            PickerField.Day -> day = (day.coerceAtMost(length) + delta).coerceIn(1, length)
+            PickerField.Month -> month = (month + delta).coerceIn(1, 12)
+            PickerField.Year -> year = (year + delta).coerceIn(yearRange)
+        }
+    }
+
+    fun currentDate() = JalaliDate(
+        year, month, day.coerceAtMost(JalaliCalendar.monthLength(year, month))
+    )
+
     val farsi = texts.useFarsiDigits
     val years = remember(yearRange, farsi) { yearRange.map { it.localized(farsi) } }
     val days = remember(monthLength, farsi) { (1..monthLength).map { it.localized(farsi) } }
@@ -77,6 +98,12 @@ fun PersianDatePickerContent(
         Column(
             modifier = modifier
                 .observeTouches(onTouch)
+                .pickerKeys(
+                    keys = keys,
+                    onStep = { step(it) },
+                    onConfirm = { onConfirm(currentDate()) },
+                    onCancel = onCancel,
+                )
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 16.dp)
@@ -100,25 +127,31 @@ fun PersianDatePickerContent(
                         items = days,
                         selectedIndex = safeDay - 1,
                         onSelectedIndexChange = { day = it + 1 },
-                        selectedColor = colors.selectedText,
+                        selectedColor = if (focused == PickerField.Day) colors.focusedText else colors.selectedText,
                         unselectedColor = colors.unselectedText,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .observeTouches { focused = PickerField.Day },
                     )
                     WheelPicker(
                         items = texts.monthNames,
                         selectedIndex = month - 1,
                         onSelectedIndexChange = { month = it + 1 },
-                        selectedColor = colors.selectedText,
+                        selectedColor = if (focused == PickerField.Month) colors.focusedText else colors.selectedText,
                         unselectedColor = colors.unselectedText,
-                        modifier = Modifier.weight(1.4f),
+                        modifier = Modifier
+                            .weight(1.4f)
+                            .observeTouches { focused = PickerField.Month },
                     )
                     WheelPicker(
                         items = years,
                         selectedIndex = year - yearRange.first,
                         onSelectedIndexChange = { year = yearRange.first + it },
-                        selectedColor = colors.selectedText,
+                        selectedColor = if (focused == PickerField.Year) colors.focusedText else colors.selectedText,
                         unselectedColor = colors.unselectedText,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .observeTouches { focused = PickerField.Year },
                     )
                 }
             }
@@ -131,7 +164,7 @@ fun PersianDatePickerContent(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Button(
-                    onClick = { onConfirm(JalaliDate(year, month, safeDay)) },
+                    onClick = { onConfirm(currentDate()) },
                     modifier = Modifier
                         .weight(1f)
                         .height(52.dp),
@@ -162,6 +195,7 @@ fun PersianDatePickerContent(
  * @param onConfirm Called with the selected date when the user confirms.
  * @param onTouch Called on every finger-down anywhere on the sheet, including the drag handle.
  *   Handy for resetting an inactivity timer.
+ * @param keys Hardware key mapping. Use [PersianDatePickerKeys.None] to turn it off.
  * @param colors Colors of every part. See [PersianDatePickerDefaults.colors].
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -175,6 +209,7 @@ fun PersianDatePickerBottomSheet(
     texts: PersianDatePickerTexts = PersianDatePickerTexts(),
     colors: PersianDatePickerColors = PersianDatePickerDefaults.colors(),
     onTouch: () -> Unit = {},
+    keys: PersianDatePickerKeys = PersianDatePickerKeys(),
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
     val scope = rememberCoroutineScope()
@@ -196,9 +231,12 @@ fun PersianDatePickerBottomSheet(
             yearRange = yearRange,
             texts = texts,
             colors = colors,
+            keys = keys,
         )
     }
 }
+
+private enum class PickerField { Day, Month, Year }
 
 /** Observes finger-down events without consuming them (Initial pass, so children work as usual). */
 @Composable
