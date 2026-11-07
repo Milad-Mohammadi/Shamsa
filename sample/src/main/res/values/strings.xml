@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Shamsa Sample</string>
+    <string name="selected_date">تاریخ انتخابی: %1$s</string>
+    <string name="touch_count">تعداد لمس داخل پیکر: %1$d</string>
+    <string name="open_default">پیش‌فرض (امروز)</string>
+    <string name="open_custom">سفارشی (۳۰ اسفند ۱۴۰۳ کبیسه)</string>
+    <string name="custom_confirm">ثبت</string>
+    <string name="custom_cancel">بستن</string>
+</resources>

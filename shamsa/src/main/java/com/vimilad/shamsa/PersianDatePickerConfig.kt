@@ -4,27 +4,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 
-/** All user-visible strings. Every field can be overridden. */
+/**
+ * All user-visible strings.
+ * Build one with [PersianDatePickerDefaults.texts]; the defaults come from the library's
+ * `strings.xml` (`shamsa_confirm`, `shamsa_cancel`, `shamsa_month_names`).
+ */
 @Immutable
 data class PersianDatePickerTexts(
-    val confirm: String = "تایید",
-    val cancel: String = "انصراف",
-    val monthNames: List<String> = DefaultMonthNames,
+    val confirm: String,
+    val cancel: String,
+    val monthNames: List<String>,
     /** Render years and days with Persian digits instead of Latin digits. */
     val useFarsiDigits: Boolean = true,
 ) {
     init {
         require(monthNames.size == 12) { "monthNames must have 12 items" }
-    }
-
-    companion object {
-        val DefaultMonthNames = listOf(
-            "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
-            "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
-        )
     }
 }
 
@@ -69,6 +68,24 @@ data class PersianDatePickerTextStyles(
 )
 
 object PersianDatePickerDefaults {
+
+    /**
+     * Texts. Defaults come from string resources, so you can also change them for the whole app
+     * by defining the same resource names in your own `strings.xml`:
+     * `shamsa_confirm`, `shamsa_cancel` and the 12-item array `shamsa_month_names`.
+     */
+    @Composable
+    fun texts(
+        confirm: String = stringResource(R.string.shamsa_confirm),
+        cancel: String = stringResource(R.string.shamsa_cancel),
+        monthNames: List<String> = stringArrayResource(R.array.shamsa_month_names).toList(),
+        useFarsiDigits: Boolean = true,
+    ) = PersianDatePickerTexts(
+        confirm = confirm,
+        cancel = cancel,
+        monthNames = monthNames,
+        useFarsiDigits = useFarsiDigits,
+    )
 
     @Composable
     fun colors(

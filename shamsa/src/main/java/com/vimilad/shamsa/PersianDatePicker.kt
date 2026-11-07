@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
  *
  * @param onTouch Called on every finger-down anywhere inside the content. The event is not
  *   consumed, so wheels and buttons behave as usual.
- * @param keys Hardware key mapping. Defaults: up/right = +1, down/left = -1, OK = confirm,
+ * @param keys Hardware key mapping. Defaults: down/right = +1, up/left = -1, OK = confirm,
  *   X/Escape/Back = cancel. Key focus starts on the day column; touching the month or year
  *   wheel moves key focus to that column.
  * @param colors Colors of every part. See [PersianDatePickerDefaults.colors].
@@ -58,7 +58,7 @@ fun PersianDatePickerContent(
     modifier: Modifier = Modifier,
     initialDate: JalaliDate = JalaliDate.today(),
     yearRange: IntRange = 1300..1500,
-    texts: PersianDatePickerTexts = PersianDatePickerTexts(),
+    texts: PersianDatePickerTexts = PersianDatePickerDefaults.texts(),
     colors: PersianDatePickerColors = PersianDatePickerDefaults.colors(),
     textStyles: PersianDatePickerTextStyles = PersianDatePickerDefaults.textStyles(),
     onTouch: () -> Unit = {},
@@ -220,7 +220,7 @@ fun PersianDatePickerBottomSheet(
     modifier: Modifier = Modifier,
     initialDate: JalaliDate = JalaliDate.today(),
     yearRange: IntRange = 1300..1500,
-    texts: PersianDatePickerTexts = PersianDatePickerTexts(),
+    texts: PersianDatePickerTexts = PersianDatePickerDefaults.texts(),
     colors: PersianDatePickerColors = PersianDatePickerDefaults.colors(),
     textStyles: PersianDatePickerTextStyles = PersianDatePickerDefaults.textStyles(),
     onTouch: () -> Unit = {},

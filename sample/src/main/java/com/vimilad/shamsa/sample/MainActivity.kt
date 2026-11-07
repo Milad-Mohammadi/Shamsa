@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -20,13 +21,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.vimilad.shamsa.JalaliDate
 import com.vimilad.shamsa.PersianDatePickerBottomSheet
 import com.vimilad.shamsa.PersianDatePickerDefaults
-import com.vimilad.shamsa.PersianDatePickerTexts
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +40,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Sample() {
     var selected by remember { mutableStateOf<JalaliDate?>(null) }
@@ -53,11 +55,11 @@ private fun Sample() {
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("تاریخ انتخابی: ${selected ?: "—"}")
-        Text("تعداد لمس داخل پیکر: $touchCount")
+        Text(stringResource(R.string.selected_date, selected?.toString() ?: "—"))
+        Text(stringResource(R.string.touch_count, touchCount))
 
-        Button(onClick = { showDefault = true }) { Text("پیش‌فرض (امروز)") }
-        Button(onClick = { showCustom = true }) { Text("سفارشی (۳۰ اسفند ۱۴۰۳ کبیسه)") }
+        Button(onClick = { showDefault = true }) { Text(stringResource(R.string.open_default)) }
+        Button(onClick = { showCustom = true }) { Text(stringResource(R.string.open_custom)) }
     }
 
     if (showDefault) {
@@ -75,9 +77,9 @@ private fun Sample() {
             onConfirm = { selected = it },
             initialDate = JalaliDate(1403, 12, 30),
             yearRange = 1395..1410,
-            texts = PersianDatePickerTexts(
-                confirm = "ثبت",
-                cancel = "بستن",
+            texts = PersianDatePickerDefaults.texts(
+                confirm = stringResource(R.string.custom_confirm),
+                cancel = stringResource(R.string.custom_cancel),
                 useFarsiDigits = false,
             ),
             // One line to change the font of the whole picker. Swap in your own FontFamily,
