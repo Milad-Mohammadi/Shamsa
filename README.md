@@ -11,8 +11,8 @@ Three scrolling wheels (day, month, year), a confirm and a cancel button, and no
 - **Correct calendar.** Leap years and 29/30/31-day months are handled, and the day is
   clamped automatically when you scroll to a shorter month or a non-leap year.
 - **Compact.** Each wheel shows three rows: previous, current and next.
-- **Hardware keys.** D-pad, OK and cancel keys work out of the box, with hold-to-repeat and
-  fast scroll. Built for POS terminals and other devices with physical keypads.
+- **Hardware keys.** D-pad, OK and cancel keys work out of the box.
+  Built for POS terminals and other devices with physical keypads.
 - **Touch callback.** Get notified on every touch inside the picker
   (for example, to reset an inactivity timer).
 - **Easy to theme.** Texts, colors and fonts are all configurable from the outside.
@@ -71,7 +71,7 @@ swipe down, tap outside, Back), so always set your "show" state to `false` there
 | `onConfirm` | required | Called with the selected `JalaliDate`. |
 | `initialDate` | `JalaliDate.today()` | Date selected when the sheet opens. |
 | `yearRange` | `1300..1500` | Years available in the year wheel. |
-| `texts` | `PersianDatePickerTexts()` | Button labels, month names, digit style. |
+| `texts` | `PersianDatePickerDefaults.texts()` | Button labels, month names, digit style. |
 | `colors` | `PersianDatePickerDefaults.colors()` | Colors of every part. |
 | `textStyles` | `PersianDatePickerDefaults.textStyles()` | Fonts and text styles. |
 | `onTouch` | `{}` | Called on every finger-down inside the sheet. |
@@ -85,11 +85,16 @@ swipe down, tap outside, Back), so always set your "show" state to `false` there
 
 ### Texts
 
+All strings live in the library's `strings.xml`: `shamsa_confirm`, `shamsa_cancel` and the
+12-item array `shamsa_month_names` (Persian by default).
+
+Change them for the whole app by defining the same names in your own `strings.xml`, or per call:
+
 ```kotlin
 PersianDatePickerBottomSheet(
     /* ... */
-    texts = PersianDatePickerTexts(
-        confirm = "Select",
+    texts = PersianDatePickerDefaults.texts(
+        confirm = stringResource(R.string.select),
         cancel = "Close",
         monthNames = myTwelveMonthNames,
         useFarsiDigits = false,          // 1405 instead of Persian digits
@@ -141,8 +146,8 @@ PersianDatePickerBottomSheet(
 
 | Action | Default keys |
 |---|---|
-| +1 on the focused column | DPAD up, DPAD right |
-| -1 on the focused column | DPAD down, DPAD left |
+| +1 on the focused column | DPAD down, DPAD right |
+| -1 on the focused column | DPAD up, DPAD left |
 | Confirm | DPAD center, Enter, Numpad Enter |
 | Cancel (closes the sheet) | Escape, Back, Clear |
 
@@ -150,24 +155,18 @@ PersianDatePickerBottomSheet(
   that column, and touching the day wheel moves it back.
 - The focused column is drawn with `focusedText`. Set `focusedText` equal to `selectedText` to
   hide the indication.
-- **Holding** an up/down key keeps scrolling. The picker runs its own repeat timer, so this works
-  even on keypads that do not send key-repeat events. After a number of repeats the step grows
-  (fast scroll).
-- Values do not wrap around: a column stops at its first and last item, and the day never
-  exceeds the length of the selected month.
+- Every key down is one step. Values do not wrap around: a column stops at its first and last
+  item, and the day never exceeds the length of the selected month.
 
 Everything is configurable:
 
 ```kotlin
 keys = PersianDatePickerKeys(
-    increase = setOf(Key.DirectionUp),
-    decrease = setOf(Key.DirectionDown),
+    increase = setOf(Key.DirectionDown),
+    decrease = setOf(Key.DirectionUp),
     confirm = setOf(Key.Enter),
     cancel = setOf(Key.Escape, Key.Back),
-    repeatDelayMillis = 400,      // delay before a held key starts repeating
-    repeatIntervalMillis = 70,    // 0 turns hold-to-repeat off
-    fastScrollAfterRepeats = 10,  // repeats before the step grows
-    fastScrollStep = 3,           // 1 turns fast scroll off
+    debugLog = false,             // true: log every key event to Logcat (tag ShamsaKeys)
 )
 
 keys = PersianDatePickerKeys.None   // turn hardware key handling off
