@@ -1,4 +1,5 @@
 # Shamsa
+![Shamsa - Jalali Date Picker for Jetpack Compose](/assets/banner.png)
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.vimilad/shamsa)](https://central.sonatype.com/artifact/com.vimilad/shamsa)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
