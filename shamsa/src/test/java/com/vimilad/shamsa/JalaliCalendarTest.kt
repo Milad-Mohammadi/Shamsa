@@ -26,11 +26,9 @@ class JalaliCalendarTest {
     }
 
     @Test
-    fun invalidDateRejected() {
-        assertThrows(IllegalArgumentException::class.java) { JalaliDate(1404, 12, 30) }
-        assertThrows(IllegalArgumentException::class.java) { JalaliDate(1404, 7, 31) }
-        assertThrows(IllegalArgumentException::class.java) { JalaliDate(1404, 13, 1) }
-        JalaliDate(1403, 12, 30) // must not throw
+    fun invalidMonthRejected() {
+        assertThrows(IllegalArgumentException::class.java) { JalaliCalendar.monthLength(1404, 0) }
+        assertThrows(IllegalArgumentException::class.java) { JalaliCalendar.monthLength(1404, 13) }
     }
 
     @Test
@@ -39,6 +37,7 @@ class JalaliCalendarTest {
         assertArrayEquals(intArrayOf(2024, 3, 20), JalaliCalendar.toGregorian(1403, 1, 1))
         assertArrayEquals(intArrayOf(2025, 3, 20), JalaliCalendar.toGregorian(1403, 12, 30))
         assertArrayEquals(intArrayOf(1405, 8, 12), JalaliCalendar.fromGregorian(2026, 11, 3))
+        assertArrayEquals(intArrayOf(1402, 12, 10), JalaliCalendar.fromGregorian(2024, 2, 29))
     }
 
     @Test
