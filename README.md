@@ -4,19 +4,24 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 ![minSdk](https://img.shields.io/badge/minSdk-21-brightgreen)
 
-A Jetpack Compose **Jalali (Persian) date picker** shown as a modal bottom sheet.
-Three scrolling wheels (day, month, year), a confirm and a cancel button, and nothing else.
+Jetpack Compose **date, time and date-time pickers** as modal bottom sheets, for the Jalali
+(Persian) and the Gregorian calendar. Compact scrolling wheels, a confirm and a cancel button,
+and nothing else.
 
-- **Zero third-party dependencies.** Only Compose. The calendar math is built in.
-- **Correct calendar.** Leap years and 29/30/31-day months are handled, and the day is
-  clamped automatically when you scroll to a shorter month or a non-leap year.
+- **Three pickers.** `ShamsaDatePickerBottomSheet`, `ShamsaTimePickerBottomSheet` and
+  `ShamsaDateTimePickerBottomSheet` (date first, then time).
+- **Two independent settings.** Library language (Persian or English) and calendar type
+  (Jalali or Gregorian). English + Jalali shows `Farvardin`, `Ordibehesht`, ...
+- **Zero third-party dependencies.** Only Compose. The calendar math is built in and is tested
+  against the samanzamani `PersianDate` library.
+- **Correct calendars.** Leap years and 29/30/31-day months are handled, and the day is clamped
+  automatically when you scroll to a shorter month or a non-leap year.
 - **Compact.** Each wheel shows three rows: previous, current and next.
-- **Hardware keys.** D-pad, OK and cancel keys work out of the box.
-  Built for POS terminals and other devices with physical keypads.
+- **Hardware keys.** D-pad, OK and cancel keys work out of the box, plus an optional key that
+  moves focus between the wheels. Built for POS terminals and other devices with keypads.
 - **Touch callback.** Get notified on every touch inside the picker
   (for example, to reset an inactivity timer).
-- **Easy to theme.** Texts, colors and fonts are all configurable from the outside.
-- **RTL.** The picker is always laid out right-to-left: day | month | year.
+- **Easy to theme.** Texts, colors and fonts are configurable from the outside.
 
 ## Installation
 
@@ -42,19 +47,20 @@ Material 3 on its own classpath. `minSdk` is 21.
 
 ## Quick start
 
+### Date
+
 ```kotlin
 @Composable
 fun Screen() {
     var show by remember { mutableStateOf(false) }
-    var date by remember { mutableStateOf<JalaliDate?>(null) }
+    var date by remember { mutableStateOf<ShamsaDate?>(null) }
 
     Button(onClick = { show = true }) { Text("Pick a date") }
 
     if (show) {
-        PersianDatePickerBottomSheet(
+        ShamsaDatePickerBottomSheet(
             onDismissRequest = { show = false },   // called after the sheet has closed
-            onConfirm = { date = it },             // JalaliDate(year, month, day)
-            initialDate = date ?: JalaliDate.today(),
+            onConfirm = { date = it },             // ShamsaDate(year, month, day, calendar)
         )
     }
 }
@@ -63,51 +69,110 @@ fun Screen() {
 `onDismissRequest` is called after the sheet closes for any reason (cancel, confirm,
 swipe down, tap outside, Back), so always set your "show" state to `false` there.
 
+### Time
+
+```kotlin
+ShamsaTimePickerBottomSheet(
+    onDismissRequest = { show = false },
+    onConfirm = { time: ShamsaTime -> /* time.hour, time.minute, time.second */ },
+    showSeconds = false,   // adds a seconds wheel
+    minuteStep = 5,        // minutes offered every 5 minutes
+)
+```
+
+The time picker uses a 24-hour clock. The wheels are always hour, minute, second from left to right.
+
+### Date and time
+
+```kotlin
+ShamsaDateTimePickerBottomSheet(
+    onDismissRequest = { show = false },
+    onConfirm = { value: ShamsaDateTime -> /* value.date, value.time */ },
+)
+```
+
+The sheet has two steps, in order: first the date (button **Next**), then the time (buttons
+**Confirm** and **Back**). The cancel key cancels the whole picker from either step.
+
+## Language and calendar
+
+`language` and `calendar` are two separate parameters. Any combination works:
+
+| `language` | `calendar` | Month names | Digits | Direction |
+|---|---|---|---|---|
+| `Persian` | `Jalali` | فروردین, اردیبهشت, ... | Persian | RTL |
+| `Persian` | `Gregorian` | ژانویه, فوریه, ... | Persian | RTL |
+| `English` | `Jalali` | Farvardin, Ordibehesht, ... | Latin | LTR |
+| `English` | `Gregorian` | January, February, ... | Latin | LTR |
+
+```kotlin
+ShamsaDatePickerBottomSheet(
+    /* ... */
+    language = ShamsaLanguage.English,
+    calendar = ShamsaCalendar.Jalali,
+)
+```
+
+The language is independent of the device language, so a Persian picker stays Persian on an
+English device. The date you get back is expressed in the calendar you asked for, and you can
+convert it at any time (see [Dates and times](#dates-and-times)).
+
 ## Parameters
+
+Date picker (the time and date-time pickers share most of them):
 
 | Parameter | Default | Description |
 |---|---|---|
 | `onDismissRequest` | required | Called after the sheet has closed. |
-| `onConfirm` | required | Called with the selected `JalaliDate`. |
-| `initialDate` | `JalaliDate.today()` | Date selected when the sheet opens. |
-| `yearRange` | `1300..1500` | Years available in the year wheel. |
-| `texts` | `PersianDatePickerDefaults.texts()` | Button labels, month names, digit style. |
-| `colors` | `PersianDatePickerDefaults.colors()` | Colors of every part. |
-| `textStyles` | `PersianDatePickerDefaults.textStyles()` | Fonts and text styles. |
+| `onConfirm` | required | Called with the picked value. |
+| `language` | `Persian` | Language of buttons, month names and layout direction. |
+| `calendar` | `Jalali` | Calendar of the wheels and of the returned date. |
+| `initialDate` | today | Selected at the start (converted to `calendar` if needed). |
+| `yearRange` | 1300..1500 (Jalali), 1920..2120 (Gregorian) | Years in the year wheel. |
+| `texts` | `ShamsaDefaults.texts(language, calendar)` | Button labels, month names, digit style. |
+| `colors` | `ShamsaDefaults.colors()` | Colors of every part. |
+| `textStyles` | `ShamsaDefaults.textStyles()` | Fonts and text styles. |
 | `onTouch` | `{}` | Called on every finger-down inside the sheet. |
-| `keys` | `PersianDatePickerKeys()` | Hardware key mapping. |
+| `keys` | `ShamsaKeys()` | Hardware key mapping. |
+| `focusKey` | `null` | Optional key that moves focus to the next wheel. |
 | `sheetState` | skip partially expanded | Material 3 `SheetState`. |
 
-`PersianDatePickerContent` takes the same parameters (minus `onDismissRequest` and
-`sheetState`, plus `onCancel`) if you want to host the picker in your own dialog or screen.
+Only the time picker: `initialTime`, `showSeconds`, `minuteStep`. Only the date-time picker:
+`initialDateTime`, `showSeconds`, `minuteStep`, plus the date parameters.
+Each sheet has a matching `...Content` composable (without the sheet) if you want to host the
+picker in your own dialog or screen.
 
 ## Customization
 
 ### Texts
 
-All strings live in the library's `strings.xml`: `shamsa_confirm`, `shamsa_cancel` and the
-12-item array `shamsa_month_names` (Persian by default).
+All strings live in the library's `strings.xml` (Persian in `values`, English in `values-en`):
+`shamsa_confirm`, `shamsa_cancel`, `shamsa_next`, `shamsa_back` and the 12-item arrays
+`shamsa_months_jalali` and `shamsa_months_gregorian`.
 
 Change them for the whole app by defining the same names in your own `strings.xml`, or per call:
 
 ```kotlin
-PersianDatePickerBottomSheet(
+ShamsaDatePickerBottomSheet(
     /* ... */
-    texts = PersianDatePickerDefaults.texts(
+    texts = ShamsaDefaults.texts(
+        language = ShamsaLanguage.English,
+        calendar = ShamsaCalendar.Jalali,
         confirm = stringResource(R.string.select),
         cancel = "Close",
-        monthNames = myTwelveMonthNames,
-        useFarsiDigits = false,          // 1405 instead of Persian digits
+        usePersianDigits = false,
     ),
 )
 ```
 
+When you pass your own `texts`, repeat the `language` and `calendar` you used for the picker.
+
 ### Fonts
 
 ```kotlin
-PersianDatePickerBottomSheet(
+ShamsaDatePickerBottomSheet(
     /* ... */
-    textStyles = PersianDatePickerDefaults.textStyles(fontFamily = vazirmatn),
+    textStyles = ShamsaDefaults.textStyles(fontFamily = vazirmatn),
 )
 ```
 
@@ -119,9 +184,9 @@ picked up automatically. `item`, `selectedItem` and `button` can also be set ind
 Override only what you need; everything else follows your Material theme.
 
 ```kotlin
-PersianDatePickerBottomSheet(
+ShamsaDatePickerBottomSheet(
     /* ... */
-    colors = PersianDatePickerDefaults.colors(
+    colors = ShamsaDefaults.colors(
         sheetContainer = Color(0xFF1B2B34),
         selectedRow = Color(0xFF2C4452),
         confirmContainer = Color(0xFFFFC857),
@@ -137,7 +202,7 @@ PersianDatePickerBottomSheet(
 | `dragHandle` | Drag handle at the top |
 | `selectedRow` | Highlight bar behind the selected row |
 | `selectedText` | Selected row |
-| `focusedText` | Selected row of the column that has hardware-key focus |
+| `focusedText` | Selected row of the wheel that has key focus |
 | `unselectedText` | Previous and next rows |
 | `confirmContainer`, `confirmContent` | Confirm button |
 | `cancelContainer`, `cancelContent` | Cancel button |
@@ -146,22 +211,31 @@ PersianDatePickerBottomSheet(
 
 | Action | Default keys |
 |---|---|
-| +1 on the focused column | DPAD down, DPAD right |
-| -1 on the focused column | DPAD up, DPAD left |
-| Confirm | DPAD center, Enter, Numpad Enter |
+| +1 on the focused wheel | DPAD down, DPAD right |
+| -1 on the focused wheel | DPAD up, DPAD left |
+| Confirm (or Next) | DPAD center, Enter, Numpad Enter |
 | Cancel (closes the sheet) | Escape, Back, Clear |
 
-- Key focus starts on the **day** column. Touching the month or year wheel moves key focus to
-  that column, and touching the day wheel moves it back.
-- The focused column is drawn with `focusedText`. Set `focusedText` equal to `selectedText` to
+- Key focus starts on the first wheel (day, or hour). **Touching a wheel moves key focus to it**,
+  with or without a focus key.
+- Pass `focusKey` to also move focus with a physical key. Each press moves to the next wheel
+  and wraps around: day, month, year, day, ... (or hour, minute, second, hour, ...).
+  `focusKey` takes precedence over every key in `ShamsaKeys`.
+  ```kotlin
+  ShamsaDatePickerBottomSheet(
+      /* ... */
+      focusKey = Key.Tab,
+  )
+  ```
+- The focused wheel is drawn with `focusedText`. Set `focusedText` equal to `selectedText` to
   hide the indication.
-- Every key down is one step. Values do not wrap around: a column stops at its first and last
+- Every key down is one step. Values do not wrap around: a wheel stops at its first and last
   item, and the day never exceeds the length of the selected month.
 
 Everything is configurable:
 
 ```kotlin
-keys = PersianDatePickerKeys(
+keys = ShamsaKeys(
     increase = setOf(Key.DirectionDown),
     decrease = setOf(Key.DirectionUp),
     confirm = setOf(Key.Enter),
@@ -169,7 +243,7 @@ keys = PersianDatePickerKeys(
     debugLog = false,             // true: log every key event to Logcat (tag ShamsaKeys)
 )
 
-keys = PersianDatePickerKeys.None   // turn hardware key handling off
+keys = ShamsaKeys.None   // turn hardware key handling off
 ```
 
 If a key is listed in more than one set, the priority is cancel, confirm, increase, decrease.
@@ -177,7 +251,7 @@ If a key is listed in more than one set, the priority is cancel, confirm, increa
 ## Touch callback
 
 ```kotlin
-PersianDatePickerBottomSheet(
+ShamsaDatePickerBottomSheet(
     /* ... */
     onTouch = { inactivityTimer.reset() },
 )
@@ -187,30 +261,54 @@ PersianDatePickerBottomSheet(
 is not consumed, so the picker behaves exactly as it would without the callback. Hardware key
 presses do not trigger it.
 
-## Calendar utilities
-
-The calendar math is public and can be used without the UI.
+## Dates and times
 
 ```kotlin
-JalaliCalendar.isLeapYear(1403)            // true
-JalaliCalendar.monthLength(1403, 12)       // 30
-JalaliCalendar.monthLength(1404, 12)       // 29
+val d = ShamsaDate.jalali(1405, 8, 12)        // throws IllegalArgumentException for impossible dates
+d.toGregorian()                               // ShamsaDate.gregorian(2026, 11, 3)
+ShamsaDate.gregorian(2026, 11, 3).toJalali()  // 1405/08/12
+d.convertTo(ShamsaCalendar.Gregorian)
+d.toDate()                                    // java.util.Date at midnight, device time zone
+ShamsaDate.today(ShamsaCalendar.Jalali)
+ShamsaDate.from(date, calendar)               // from java.util.Date
+ShamsaDate.isLeapYear(ShamsaCalendar.Jalali, 1403)       // true
+ShamsaDate.monthLength(ShamsaCalendar.Jalali, 1403, 12)  // 30
 
-val d = JalaliDate(1405, 8, 12)            // throws IllegalArgumentException for impossible dates
-d.toDate()                                 // java.util.Date at midnight, device time zone
-JalaliDate.today()
-JalaliDate.fromGregorian(2026, 11, 3)      // 1405/08/12
-JalaliDate.from(date)                      // from java.util.Date
-JalaliDate.fromMillis(millis)
+ShamsaTime(14, 35)                            // hour, minute, second = 0
+ShamsaDateTime(d, ShamsaTime(14, 35)).toDate()
 ```
 
-The algorithm is [jalaali-js](https://github.com/jalaali/jalaali-js), which matches the official
-Iranian calendar for years 1178 to 1633. It was checked against every day from 1300 to 1500.
+`toString()` uses Latin digits: `1405/08/12`, `14:35:00`, `1405/08/12 14:35:00`.
+
+## Accuracy
+
+Wrong dates are the worst bug a date picker can have, so the calendar is tested heavily.
+
+The Jalali math is [jalaali-js](https://github.com/jalaali/jalaali-js), which matches the
+official Iranian calendar for years 1178 to 1633. It was compared with the
+[samanzamani/PersianDate](https://github.com/samanzamani/PersianDate) library:
+
+- Leap years and month lengths: identical for every year from 1178 to 1633.
+- Jalali to Gregorian: identical for every day from 1178 to 1633.
+- Both directions: identical for every day from 1300 to 1500 (the default picker range).
+
+Outside 1178..1633 the two libraries use different rules and differ, so keep `yearRange` inside
+that window.
+
+The unit tests (`./gradlew :shamsa:testDebugUnitTest`) check, among other things:
+
+- `golden-jalali-years.csv`: for every year 1178..1633, the leap flag and the Gregorian date of
+  1 Farvardin, generated from the samanzamani library.
+- Every day of those years against plain JDK date arithmetic (one day added at a time starting
+  from the reference new-year date), in both directions.
+- Year lengths, month lengths, round trips, Gregorian leap rules (1900, 2000, 2100, ...),
+  validation of impossible dates, and conversions between calendars.
 
 ## Sample app
 
-The `sample` module shows the default picker, a fully customized one (font, colors, texts,
-custom year range) and the touch callback. Open the project in Android Studio and run `sample`.
+The `sample` module shows all three pickers, the language and calendar toggles, a fully
+customized date picker (font, colors, texts, custom year range), the focus key and the touch
+callback. Open the project in Android Studio and run `sample`.
 
 ## Building
 
