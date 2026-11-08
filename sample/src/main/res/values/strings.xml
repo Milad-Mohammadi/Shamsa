@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Shamsa Sample</string>
-    <string name="selected_date">تاریخ انتخابی: %1$s</string>
+    <string name="result">نتیجه: %1$s</string>
     <string name="touch_count">تعداد لمس داخل پیکر: %1$d</string>
-    <string name="open_default">پیش‌فرض (امروز)</string>
-    <string name="open_custom">سفارشی (۳۰ اسفند ۱۴۰۳ کبیسه)</string>
+    <string name="language_toggle">زبان کتابخانه: %1$s</string>
+    <string name="calendar_toggle">نوع تقویم: %1$s</string>
+    <string name="language_persian">فارسی</string>
+    <string name="language_english">English</string>
+    <string name="calendar_jalali">شمسی</string>
+    <string name="calendar_gregorian">میلادی</string>
+    <string name="open_date">انتخاب تاریخ</string>
+    <string name="open_time">انتخاب زمان</string>
+    <string name="open_datetime">انتخاب تاریخ و زمان</string>
+    <string name="open_custom">تاریخ سفارشی (فونت، رنگ، متن)</string>
     <string name="custom_confirm">ثبت</string>
     <string name="custom_cancel">بستن</string>
 </resources>

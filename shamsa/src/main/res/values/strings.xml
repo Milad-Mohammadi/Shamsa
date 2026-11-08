@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Default (Persian) texts. English texts live in values-en. -->
 <resources>
     <string name="shamsa_confirm">تایید</string>
     <string name="shamsa_cancel">انصراف</string>
+    <string name="shamsa_next">بعدی</string>
+    <string name="shamsa_back">بازگشت</string>
 
-    <string-array name="shamsa_month_names">
+    <string-array name="shamsa_months_jalali">
         <item>فروردین</item>
         <item>اردیبهشت</item>
         <item>خرداد</item>
@@ -16,5 +19,20 @@
         <item>دی</item>
         <item>بهمن</item>
         <item>اسفند</item>
+    </string-array>
+
+    <string-array name="shamsa_months_gregorian">
+        <item>ژانویه</item>
+        <item>فوریه</item>
+        <item>مارس</item>
+        <item>آوریل</item>
+        <item>مه</item>
+        <item>ژوئن</item>
+        <item>ژوئیه</item>
+        <item>اوت</item>
+        <item>سپتامبر</item>
+        <item>اکتبر</item>
+        <item>نوامبر</item>
+        <item>دسامبر</item>
     </string-array>
 </resources>
