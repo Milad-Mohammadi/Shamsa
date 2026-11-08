@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Shamsa Sample</string>
-    <string name="result">نتیجه: %1$s</string>
+
+    <!-- Results -->
+    <string name="result_date">تاریخ: %1$s</string>
+    <string name="result_time">زمان: %1$s</string>
+    <string name="result_datetime">تاریخ و زمان: %1$s</string>
     <string name="touch_count">تعداد لمس داخل پیکر: %1$d</string>
-    <string name="language_toggle">زبان کتابخانه: %1$s</string>
-    <string name="calendar_toggle">نوع تقویم: %1$s</string>
-    <string name="language_persian">فارسی</string>
-    <string name="language_english">English</string>
-    <string name="calendar_jalali">شمسی</string>
-    <string name="calendar_gregorian">میلادی</string>
+
+    <!-- Settings -->
+    <string name="settings_title">تنظیمات</string>
+    <string name="setting_english">زبان کتابخانه: انگلیسی (خاموش = فارسی)</string>
+    <string name="setting_gregorian">تقویم میلادی (خاموش = شمسی)</string>
+    <string name="setting_seconds">نمایش ثانیه در تایم‌پیکر</string>
+    <string name="setting_minute_step">دقیقه‌ها با قدم ۵ (خاموش = قدم ۱)</string>
+    <string name="setting_custom_theme">تم کاستوم (فونت، رنگ، متن)</string>
+    <string name="keys_hint">کلیدهای فیزیکی: بالا/چپ = ‎−۱، پایین/راست = ‎+۱، OK = تایید، Tab = تغییر فوکوس بین ستون‌ها</string>
+
+    <!-- Actions -->
     <string name="open_date">انتخاب تاریخ</string>
-    <string name="open_time">انتخاب زمان</string>
-    <string name="open_datetime">انتخاب تاریخ و زمان</string>
-    <string name="open_custom">تاریخ سفارشی (فونت، رنگ، متن)</string>
-    <string name="custom_confirm">ثبت</string>
-    <string name="custom_cancel">بستن</string>
+    <string name="open_time">انتخاب زمان (جداگانه)</string>
+    <string name="open_datetime">انتخاب تاریخ و زمان (پشت‌سرهم)</string>
+    <string name="open_leap">۳۰ اسفند ۱۴۰۳ (سال کبیسه)</string>
+
+    <!-- Custom theme texts -->
+    <string name="custom_confirm_fa">ثبت</string>
+    <string name="custom_cancel_fa">بستن</string>
+    <string name="custom_confirm_en">Set</string>
+    <string name="custom_cancel_en">Close</string>
 </resources>
