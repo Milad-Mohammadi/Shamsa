@@ -40,7 +40,7 @@ dependencyResolutionManagement {
 
 // app/build.gradle.kts
 dependencies {
-  implementation("com.vimilad:shamsa:1.0.0")
+  implementation("com.vimilad:shamsa:<version>")
 }
 ```
 
@@ -100,12 +100,12 @@ The sheet has two steps, in order: first the date (button **Next**), then the ti
 
 `language` and `calendar` are two separate parameters. Any combination works:
 
-| `language` | `calendar` | Month names | Digits | Direction |
-|---|---|---|---|---|
-| `Persian` | `Jalali` | فروردین, اردیبهشت, ... | Persian | RTL |
-| `Persian` | `Gregorian` | ژانویه, فوریه, ... | Persian | RTL |
-| `English` | `Jalali` | Farvardin, Ordibehesht, ... | Latin | LTR |
-| `English` | `Gregorian` | January, February, ... | Latin | LTR |
+| `language` | `calendar`  | Month names                 | Digits  | Direction |
+|------------|-------------|-----------------------------|---------|-----------|
+| `Persian`  | `Jalali`    | فروردین, اردیبهشت, ...      | Persian | RTL       |
+| `Persian`  | `Gregorian` | ژانویه, فوریه, ...          | Persian | RTL       |
+| `English`  | `Jalali`    | Farvardin, Ordibehesht, ... | Latin   | LTR       |
+| `English`  | `Gregorian` | January, February, ...      | Latin   | LTR       |
 
 ```kotlin
 ShamsaDatePickerBottomSheet(
@@ -123,20 +123,20 @@ convert it at any time (see [Dates and times](#dates-and-times)).
 
 Date picker (the time and date-time pickers share most of them):
 
-| Parameter | Default | Description |
-|---|---|---|
-| `onDismissRequest` | required | Called after the sheet has closed. |
-| `onConfirm` | required | Called with the picked value. |
-| `language` | `Persian` | Language of buttons, month names and layout direction. |
-| `calendar` | `Jalali` | Calendar of the wheels and of the returned date. |
-| `initialDate` | today | Selected at the start (converted to `calendar` if needed). |
-| `yearRange` | 1300..1500 (Jalali), 1920..2120 (Gregorian) | Years in the year wheel. |
-| `texts` | `ShamsaDefaults.texts(language, calendar)` | Button labels, month names, digit style. |
-| `colors` | `ShamsaDefaults.colors()` | Colors of every part. |
-| `textStyles` | `ShamsaDefaults.textStyles()` | Fonts and text styles. |
-| `onTouch` | `{}` | Called on every finger-down inside the sheet. |
-| `keys` | `ShamsaKeys()` | Hardware key mapping. |
-| `focusKey` | `null` | Optional key that moves focus to the next wheel. |
+| Parameter          | Default                                     | Description                                                |
+|--------------------|---------------------------------------------|------------------------------------------------------------|
+| `onDismissRequest` | required                                    | Called after the sheet has closed.                         |
+| `onConfirm`        | required                                    | Called with the picked value.                              |
+| `language`         | `Persian`                                   | Language of buttons, month names and layout direction.     |
+| `calendar`         | `Jalali`                                    | Calendar of the wheels and of the returned date.           |
+| `initialDate`      | today                                       | Selected at the start (converted to `calendar` if needed). |
+| `yearRange`        | 1300..1500 (Jalali), 1920..2120 (Gregorian) | Years in the year wheel.                                   |
+| `texts`            | `ShamsaDefaults.texts(language, calendar)`  | Button labels, month names, digit style.                   |
+| `colors`           | `ShamsaDefaults.colors()`                   | Colors of every part.                                      |
+| `textStyles`       | `ShamsaDefaults.textStyles()`               | Fonts and text styles.                                     |
+| `onTouch`          | `{}`                                        | Called on every finger-down inside the sheet.              |
+| `keys`             | `ShamsaKeys()`                              | Hardware key mapping.                                      |
+| `focusKey`         | `null`                                      | Optional key that moves focus to the next wheel.           |
 
 The sheets are always fully expanded (no half-open state). No experimental Material 3 type appears
 in the public API, so your code does not need `@OptIn(ExperimentalMaterial3Api::class)`.
@@ -199,26 +199,26 @@ ShamsaDatePickerBottomSheet(
 )
 ```
 
-| Color | Used for |
-|---|---|
-| `sheetContainer` | Sheet background |
-| `scrim` | Overlay behind the sheet |
-| `dragHandle` | Drag handle at the top |
-| `selectedRow` | Highlight bar behind the selected row |
-| `selectedText` | Selected row |
-| `focusedText` | Selected row of the wheel that has key focus |
-| `unselectedText` | Previous and next rows |
-| `confirmContainer`, `confirmContent` | Confirm button |
-| `cancelContainer`, `cancelContent` | Cancel button |
+| Color                                | Used for                                     |
+|--------------------------------------|----------------------------------------------|
+| `sheetContainer`                     | Sheet background                             |
+| `scrim`                              | Overlay behind the sheet                     |
+| `dragHandle`                         | Drag handle at the top                       |
+| `selectedRow`                        | Highlight bar behind the selected row        |
+| `selectedText`                       | Selected row                                 |
+| `focusedText`                        | Selected row of the wheel that has key focus |
+| `unselectedText`                     | Previous and next rows                       |
+| `confirmContainer`, `confirmContent` | Confirm button                               |
+| `cancelContainer`, `cancelContent`   | Cancel button                                |
 
 ## Hardware keys
 
-| Action | Default keys |
-|---|---|
-| +1 on the focused wheel | DPAD down, DPAD right |
-| -1 on the focused wheel | DPAD up, DPAD left |
-| Confirm (or Next) | DPAD center, Enter, Numpad Enter |
-| Cancel (closes the sheet) | Escape, Back, Clear |
+| Action                    | Default keys                     |
+|---------------------------|----------------------------------|
+| +1 on the focused wheel   | DPAD down, DPAD right            |
+| -1 on the focused wheel   | DPAD up, DPAD left               |
+| Confirm (or Next)         | DPAD center, Enter, Numpad Enter |
+| Cancel (closes the sheet) | Escape, Back, Clear              |
 
 - Key focus starts on the first wheel (day, or hour). **Touching a wheel moves key focus to it**,
   with or without a focus key.
