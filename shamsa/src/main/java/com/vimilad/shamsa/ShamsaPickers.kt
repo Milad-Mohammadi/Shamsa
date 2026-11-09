@@ -1,8 +1,5 @@
 package com.vimilad.shamsa
 
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SheetState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -83,7 +80,6 @@ fun ShamsaDatePickerContent(
  * @param textStyles Fonts and text styles. See [ShamsaDefaults.textStyles].
  * See [ShamsaDatePickerContent] for the other parameters.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShamsaDatePickerBottomSheet(
     onDismissRequest: () -> Unit,
@@ -99,9 +95,8 @@ fun ShamsaDatePickerBottomSheet(
     onTouch: () -> Unit = {},
     keys: ShamsaKeys = ShamsaKeys(),
     focusKey: Key? = null,
-    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
-    ShamsaSheet(onDismissRequest, modifier, colors, onTouch, sheetState) { hideThen ->
+    ShamsaSheet(onDismissRequest, modifier, colors, onTouch) { hideThen ->
         ShamsaDatePickerContent(
             onConfirm = { date -> hideThen { onConfirm(date); onDismissRequest() } },
             onCancel = { hideThen(onDismissRequest) },
@@ -177,7 +172,6 @@ fun ShamsaTimePickerContent(
  * Time picker as a modal bottom sheet. See [ShamsaTimePickerContent] and
  * [ShamsaDatePickerBottomSheet] for the parameters.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShamsaTimePickerBottomSheet(
     onDismissRequest: () -> Unit,
@@ -193,9 +187,8 @@ fun ShamsaTimePickerBottomSheet(
     onTouch: () -> Unit = {},
     keys: ShamsaKeys = ShamsaKeys(),
     focusKey: Key? = null,
-    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
-    ShamsaSheet(onDismissRequest, modifier, colors, onTouch, sheetState) { hideThen ->
+    ShamsaSheet(onDismissRequest, modifier, colors, onTouch) { hideThen ->
         ShamsaTimePickerContent(
             onConfirm = { time -> hideThen { onConfirm(time); onDismissRequest() } },
             onCancel = { hideThen(onDismissRequest) },
@@ -291,7 +284,6 @@ fun ShamsaDateTimePickerContent(
  * [onConfirm] receives both, with the date expressed in [calendar].
  * See [ShamsaDateTimePickerContent] and [ShamsaDatePickerBottomSheet] for the parameters.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShamsaDateTimePickerBottomSheet(
     onDismissRequest: () -> Unit,
@@ -309,9 +301,8 @@ fun ShamsaDateTimePickerBottomSheet(
     onTouch: () -> Unit = {},
     keys: ShamsaKeys = ShamsaKeys(),
     focusKey: Key? = null,
-    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
-    ShamsaSheet(onDismissRequest, modifier, colors, onTouch, sheetState) { hideThen ->
+    ShamsaSheet(onDismissRequest, modifier, colors, onTouch) { hideThen ->
         ShamsaDateTimePickerContent(
             onConfirm = { value -> hideThen { onConfirm(value); onDismissRequest() } },
             onCancel = { hideThen(onDismissRequest) },

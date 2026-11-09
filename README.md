@@ -1,9 +1,10 @@
-![Shamsa - Jalali Date Picker for Jetpack Compose](/assets/banner.png)
-
 # Shamsa
 [![Maven Central](https://img.shields.io/maven-central/v/com.vimilad/shamsa)](https://central.sonatype.com/artifact/com.vimilad/shamsa)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 ![minSdk](https://img.shields.io/badge/minSdk-21-brightgreen)
+
+![Shamsa - Jalali Date Picker for Jetpack Compose](/assets/banner.png)
+
 
 Jetpack Compose **date, time and date-time pickers** as modal bottom sheets, for the Jalali
 (Persian) and the Gregorian calendar. Compact scrolling wheels, a confirm and a cancel button,
@@ -31,15 +32,15 @@ Shamsa is published to Maven Central.
 ```kotlin
 // settings.gradle.kts
 dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
-    }
+  repositories {
+    google()
+    mavenCentral()
+  }
 }
 
 // app/build.gradle.kts
 dependencies {
-    implementation("com.vimilad:shamsa:1.0.0")
+  implementation("com.vimilad:shamsa:1.0.0")
 }
 ```
 
@@ -53,17 +54,17 @@ Material 3 on its own classpath. `minSdk` is 21.
 ```kotlin
 @Composable
 fun Screen() {
-    var show by remember { mutableStateOf(false) }
-    var date by remember { mutableStateOf<ShamsaDate?>(null) }
+  var show by remember { mutableStateOf(false) }
+  var date by remember { mutableStateOf<ShamsaDate?>(null) }
 
-    Button(onClick = { show = true }) { Text("Pick a date") }
+  Button(onClick = { show = true }) { Text("Pick a date") }
 
-    if (show) {
-        ShamsaDatePickerBottomSheet(
-            onDismissRequest = { show = false },   // called after the sheet has closed
-            onConfirm = { date = it },             // ShamsaDate(year, month, day, calendar)
-        )
-    }
+  if (show) {
+    ShamsaDatePickerBottomSheet(
+      onDismissRequest = { show = false },   // called after the sheet has closed
+      onConfirm = { date = it },             // ShamsaDate(year, month, day, calendar)
+    )
+  }
 }
 ```
 
@@ -136,7 +137,9 @@ Date picker (the time and date-time pickers share most of them):
 | `onTouch` | `{}` | Called on every finger-down inside the sheet. |
 | `keys` | `ShamsaKeys()` | Hardware key mapping. |
 | `focusKey` | `null` | Optional key that moves focus to the next wheel. |
-| `sheetState` | skip partially expanded | Material 3 `SheetState`. |
+
+The sheets are always fully expanded (no half-open state). No experimental Material 3 type appears
+in the public API, so your code does not need `@OptIn(ExperimentalMaterial3Api::class)`.
 
 Only the time picker: `initialTime`, `showSeconds`, `minuteStep`. Only the date-time picker:
 `initialDateTime`, `showSeconds`, `minuteStep`, plus the date parameters.
@@ -225,7 +228,7 @@ ShamsaDatePickerBottomSheet(
   ```kotlin
   ShamsaDatePickerBottomSheet(
       /* ... */
-      focusKey = Key.Tab,
+      focusKey = Key.Menu,
   )
   ```
 - The focused wheel is drawn with `focusedText`. Set `focusedText` equal to `selectedText` to
@@ -307,9 +310,18 @@ The unit tests (`./gradlew :shamsa:testDebugUnitTest`) check, among other things
 
 ## Sample app
 
-The `sample` module shows all three pickers, the language and calendar toggles, a fully
-customized date picker (font, colors, texts, custom year range), the focus key and the touch
-callback. Open the project in Android Studio and run `sample`.
+The `sample` module is a compact playground that fits on one screen:
+
+- a results card with the last picked date, time and date-time, and a touch counter (`onTouch`)
+- two segmented controls: library language (Persian or English) and calendar (Jalali or Gregorian),
+  independent of each other
+- three chips: show the **seconds** wheel, minutes in steps of 5, and a **custom theme**
+  (font, colors and button texts, applied to every picker)
+- four buttons: date picker, **time picker on its own**, **date-time picker** (date first, then
+  time) and a date picker that starts on 30 Esfand 1403 (a leap-year day)
+
+The `Menu` key is passed as the `focusKey`, so it moves key focus between the wheels.
+Open the project in Android Studio and run `sample`.
 
 ## Building
 

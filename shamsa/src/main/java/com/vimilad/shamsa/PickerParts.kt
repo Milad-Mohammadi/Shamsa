@@ -17,9 +17,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -202,6 +202,10 @@ internal fun PickerScaffold(
 
 /**
  * Modal bottom sheet shared by all pickers.
+ *
+ * The sheet state is created here and never exposed, so no experimental Material 3 type appears in
+ * the library's public API and callers do not need `@OptIn(ExperimentalMaterial3Api::class)`.
+ *
  * [content] receives `hideThen`, which closes the sheet with its animation and then runs an action.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -211,9 +215,9 @@ internal fun ShamsaSheet(
     modifier: Modifier,
     colors: ShamsaColors,
     onTouch: () -> Unit,
-    sheetState: SheetState,
     content: @Composable (hideThen: (() -> Unit) -> Unit) -> Unit,
 ) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     val hideThen: (() -> Unit) -> Unit = { action ->
         scope.launch { sheetState.hide() }.invokeOnCompletion { action() }
