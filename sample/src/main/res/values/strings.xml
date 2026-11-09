@@ -9,19 +9,22 @@
     <string name="touch_count">تعداد لمس داخل پیکر: %1$d</string>
 
     <!-- Settings -->
-    <string name="settings_title">تنظیمات</string>
-    <string name="setting_english">زبان کتابخانه: انگلیسی (خاموش = فارسی)</string>
-    <string name="setting_gregorian">تقویم میلادی (خاموش = شمسی)</string>
-    <string name="setting_seconds">نمایش ثانیه در تایم‌پیکر</string>
-    <string name="setting_minute_step">دقیقه‌ها با قدم ۵ (خاموش = قدم ۱)</string>
-    <string name="setting_custom_theme">تم کاستوم (فونت، رنگ، متن)</string>
-    <string name="keys_hint">کلیدهای فیزیکی: بالا/چپ = ‎−۱، پایین/راست = ‎+۱، OK = تایید، Tab = تغییر فوکوس بین ستون‌ها</string>
+    <string name="setting_language">زبان</string>
+    <string name="setting_calendar">تقویم</string>
+    <string name="language_persian">فارسی</string>
+    <string name="language_english">English</string>
+    <string name="calendar_jalali">شمسی</string>
+    <string name="calendar_gregorian">میلادی</string>
+    <string name="chip_seconds">ثانیه</string>
+    <string name="chip_minute_step">دقیقه ×۵</string>
+    <string name="chip_custom_theme">تم کاستوم</string>
+    <string name="keys_hint">تأیید: ⁦OK⁩  |  تغییر مقدار: کلیدهای جهت‌دار  |  تغییر فوکوس ستون‌ها: ⁦Menu⁩</string>
 
     <!-- Actions -->
-    <string name="open_date">انتخاب تاریخ</string>
-    <string name="open_time">انتخاب زمان (جداگانه)</string>
-    <string name="open_datetime">انتخاب تاریخ و زمان (پشت‌سرهم)</string>
-    <string name="open_leap">۳۰ اسفند ۱۴۰۳ (سال کبیسه)</string>
+    <string name="open_date">تاریخ</string>
+    <string name="open_time">زمان</string>
+    <string name="open_datetime">تاریخ + زمان</string>
+    <string name="open_leap">۳۰ اسفند ۱۴۰۳ (کبیسه)</string>
 
     <!-- Custom theme texts -->
     <string name="custom_confirm_fa">ثبت</string>

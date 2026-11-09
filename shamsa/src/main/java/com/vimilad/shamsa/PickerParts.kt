@@ -228,9 +228,15 @@ internal fun ShamsaSheet(
         containerColor = colors.sheetContainer,
         scrimColor = colors.scrim,
         dragHandle = { BottomSheetDefaults.DragHandle(color = colors.dragHandle) },
-        modifier = modifier.observeTouches(onTouch),
+        modifier = modifier,
     ) {
-        content(hideThen)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .observeTouches(onTouch)
+        ) {
+            content(hideThen)
+        }
     }
 }
 
@@ -242,7 +248,11 @@ internal fun Modifier.observeTouches(onTouch: () -> Unit): Modifier {
         awaitPointerEventScope {
             while (true) {
                 val event = awaitPointerEvent(PointerEventPass.Initial)
-                if (event.changes.any { it.pressed && !it.previousPressed }) current()
+                event.changes.forEach { change ->
+                    if (change.pressed && !change.previousPressed) {
+                        current()
+                    }
+                }
             }
         }
     }
