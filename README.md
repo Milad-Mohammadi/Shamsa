@@ -25,6 +25,9 @@ and nothing else.
   (for example, to reset an inactivity timer).
 - **Easy to theme.** Texts, colors and fonts are configurable from the outside.
 
+![Shamsa - Jalali Date Picker for Jetpack Compose - Demo](/assets/demo.mp4)
+
+
 ## Installation
 
 Shamsa is published to Maven Central.
